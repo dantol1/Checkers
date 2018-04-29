@@ -108,6 +108,8 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                 do
                 {
                     nextMove = Console.ReadLine();
+
+
                     /*
                      use a method to analyze the move like so:
                      nextMove[0] = pieceCol
@@ -120,8 +122,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                      to calculate the column from the letter it is assigned we use nextMove[0 or 3] - 'A'
                      to calculate the row from the letter it is assigned we use nextMove[1 or 4] - 'a'
                      */
-                    int i = 5;
-                }
+                } while ((checkMoveInputValidity(nextMove) == false) && (m_CurrentPlayer.CheckMoveAvailabillity(nextMove) == false))
             }
 
 
@@ -152,7 +153,47 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
 
         private void printSeperator()
         {
-            Console.WriteLine(" ================================= ");
+            Console.Write(' ');
+            for (int i = 0; i < (m_BoardData.GameBoardSize*4) + 2; i++)
+            {
+                Console.Write('=');
+            }
+            Console.WriteLine(' ');
         }
+        private bool checkMoveInputValidity(string i_NextMove)
+        {
+            bool isValid = true;
+
+            if (i_NextMove.Length != 5)
+            {
+                isValid = false;
+            }
+            else
+            {
+                if (i_NextMove[0]<'A' || i_NextMove[0]>'A'+m_BoardData.GameBoardSize)
+                {
+                    isValid = false;
+                }
+                else if (i_NextMove[1] < 'a' || i_NextMove[1] > 'a' + m_BoardData.GameBoardSize)
+                {
+                    isValid = false;
+                }
+                else if (i_NextMove[2] != '>')
+                {
+                    isValid = false;
+                }
+                else if (i_NextMove[3] < 'A' || i_NextMove[3] > 'A' + m_BoardData.GameBoardSize)
+                {
+                    isValid = false;
+                }
+                else if (i_NextMove[4] < 'a' || i_NextMove[4] > 'a' + m_BoardData.GameBoardSize)
+                {
+                    isValid = false;
+                }
+            }
+
+            return isValid;
+        }
+        
     }
 }

@@ -38,6 +38,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BoardPosition.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="GameBoard.cs" />
     <Compile Include="GamePiece.cs" />
