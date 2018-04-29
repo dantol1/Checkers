@@ -96,9 +96,10 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
             return m_Board[i_Row, i_Col];
         }
 
-        public bool CheckCellAvailability(BoardPosition io_GamePieceNewBoardPosition, char i_GamePieceSymbol, BoardPosition i_MoveDirection)
+        public bool CheckCellAvailability(ref BoardPosition io_GamePieceNewBoardPosition, char i_GamePieceSymbol, BoardPosition i_MoveDirection, out bool io_PieceCaptured)
         {
             bool isAvailable = false;
+            io_PieceCaptured = false;
 
             if (m_Board[io_GamePieceNewBoardPosition.Row, io_GamePieceNewBoardPosition.Column] == ' ')
             { //the cell the piece wants to move to is empty
@@ -110,6 +111,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                 if (m_Board[io_GamePieceNewBoardPosition.Row, io_GamePieceNewBoardPosition.Column] == ' ')
                 { //the piece can capture the opponent piece.
                     isAvailable = true;
+                    io_PieceCaptured = true;
                 }
             }
 

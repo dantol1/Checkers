@@ -64,7 +64,12 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
 
                 if ((newPositionLeft.Column > 0) && (newPositionLeft.Column < m_BoardData.GameBoardSize))
                 {
-
+                    bool capturedAPiece;
+                    if (m_BoardData.CheckCellAvailability(ref newPositionLeft, m_Symbol, newPositionLeft - m_Position,
+                            out capturedAPiece) == true)
+                    {
+                        m_AvailableMovement.Add(newPositionLeft);
+                    }
                 }
             }
         }
