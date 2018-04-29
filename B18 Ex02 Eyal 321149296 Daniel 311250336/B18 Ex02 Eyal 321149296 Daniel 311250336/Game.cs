@@ -102,13 +102,24 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
 
             while (gameOver == false)
             {
-                m_CurrentPlayer = m_PlayerOne;
+                m_CurrentPlayer = m_PlayerOne; //TODO - add a swap method to exchange curr player and next player.
                 Console.Write("{0}'s turn: ", m_CurrentPlayer.Name);
 
                 do
                 {
                     nextMove = Console.ReadLine();
-                    
+                    /*
+                     use a method to analyze the move like so:
+                     nextMove[0] = pieceCol
+                     nextMove[1] = pieceRow
+                     check if such piece exists (nextMove[2] supposed to be '>')
+                     nextMove[3] = pieceNextPlaceCol
+                     nextMove[4] = pieceNextPlaceRow
+                     check if the place is available - have the game board check if the place is empty and if not
+                                                        check if it is an opponent piece that can be eaten.
+                     to calculate the column from the letter it is assigned we use nextMove[0 or 3] - 'A'
+                     to calculate the row from the letter it is assigned we use nextMove[1 or 4] - 'a'
+                     */
                 }
             }
 
