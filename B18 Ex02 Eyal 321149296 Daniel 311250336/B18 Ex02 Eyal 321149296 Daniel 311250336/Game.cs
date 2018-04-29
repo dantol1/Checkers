@@ -120,6 +120,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                      to calculate the column from the letter it is assigned we use nextMove[0 or 3] - 'A'
                      to calculate the row from the letter it is assigned we use nextMove[1 or 4] - 'a'
                      */
+                    int i = 5;
                 }
             }
 
