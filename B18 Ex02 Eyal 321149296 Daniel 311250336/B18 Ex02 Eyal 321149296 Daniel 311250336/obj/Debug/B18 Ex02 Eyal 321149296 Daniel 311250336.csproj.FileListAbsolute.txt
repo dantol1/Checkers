@@ -12,3 +12,4 @@ C:\Users\Eyal Douwma\Source\Repos\Checkers\B18 Ex02 Eyal 321149296 Daniel 311250
 C:\Users\Eyal Douwma\Source\Repos\Checkers\B18 Ex02 Eyal 321149296 Daniel 311250336\B18 Ex02 Eyal 321149296 Daniel 311250336\bin\Debug\B18 Ex02 Eyal 321149296 Daniel 311250336.exe
 C:\Users\Eyal Douwma\Source\Repos\Checkers\B18 Ex02 Eyal 321149296 Daniel 311250336\B18 Ex02 Eyal 321149296 Daniel 311250336\bin\Debug\B18 Ex02 Eyal 321149296 Daniel 311250336.pdb
 C:\Users\Eyal Douwma\Source\Repos\Checkers\B18 Ex02 Eyal 321149296 Daniel 311250336\B18 Ex02 Eyal 321149296 Daniel 311250336\bin\Debug\Ex02.ConsoleUtils.dll
+C:\Users\Daniel\Source\Repos\Checkers\B18 Ex02 Eyal 321149296 Daniel 311250336\B18 Ex02 Eyal 321149296 Daniel 311250336\obj\Debug\B18 Ex02 Eyal 321149296 Daniel 311250336.csprojResolveAssemblyReference.cache

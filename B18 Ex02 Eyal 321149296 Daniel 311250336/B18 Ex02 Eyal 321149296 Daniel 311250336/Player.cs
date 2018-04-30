@@ -15,24 +15,45 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                 return m_Name;
             }
         }
-        private bool m_CanCaptureFurther = false;
-        public bool CanCaptureFurther
+        private bool m_CanCapture = false;
+        public bool CanCapture
         {
             get
             {
-                return m_CanCaptureFurther;
-            }          
+                return m_CanCapture;
+            }
+            set
+            {
+                m_CanCapture = value;
+            }
         }
         private GameBoard m_BoardData;
-        private readonly char r_PlayerSymbol;
+        private readonly PieceSymbol r_PlayerSymbol;
         private readonly bool r_IsComputer = false;
         List <GamePiece> m_AvailablePieces = null;
+        public enum eMoveDirection
+        {
+            Down = 1,
+            Up = -1
+        }
+        private eMoveDirection m_MoveDirection;
+        public eMoveDirection MoveDirection
+        {
+            get
+            {
+                return m_MoveDirection;
+            }
+            set
+            {
+                m_MoveDirection = value;
+            }
+        }
 
-        public Player(string i_PlayerName, bool i_IsComputer,char i_PlayerSymbol,GameBoard i_GameBoard)
+        public Player(string i_PlayerName, bool i_IsComputer,Game.eGameSymbols i_PlayerSymbol,GameBoard i_GameBoard)
         {
             m_Name = i_PlayerName;
             r_IsComputer = i_IsComputer;
-            r_PlayerSymbol = i_PlayerSymbol;
+            r_PlayerSymbol.RegularSymbol = (char)i_PlayerSymbol;
             m_BoardData = i_GameBoard;
 
             m_AvailablePieces = new List <GamePiece>((i_GameBoard.GameBoardSize / 2) * ((i_GameBoard.GameBoardSize / 2) - 1));
@@ -43,7 +64,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                 {
                     if (i_GameBoard.GetCellSymbol(i,j) == r_PlayerSymbol)
                     {
-                        GamePiece newGamePiece = new GamePiece(j, i, r_PlayerSymbol,m_BoardData);
+                        GamePiece newGamePiece = new GamePiece(j, i, r_PlayerSymbol.RegularSymbol,m_BoardData, this);
                         m_AvailablePieces.Add(newGamePiece);
                     }
                 }
@@ -74,30 +95,40 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
             }
             return isValid;
         }
-        public bool CheckMoveAvailabillity(string i_NextMove,)
+        public bool CheckMoveAvailabillity(BoardPosition i_CurrentPlace, BoardPosition i_NextPlace ,List<GamePiece> i_PlayerThatMustCapture)
         {
-            int column, row, nextColumn, nextRow;
-            bool isMoveAvailable = false;
-
-            //Translate from input letters to gameboard numbers
-            column = i_NextMove[0] - 'A';
-            row = i_NextMove[1] - 'a';
-            nextColumn = i_NextMove[3] - 'A';
-            nextRow = i_NextMove[4] - 'a';
-            
-            foreach (GamePiece piece in m_AvailablePieces)
+            bool isValid = true;
+            if(m_CanCapture == true)
             {
-                if ((piece.Column == column) && (piece.Row == row))
+                foreach (GamePiece piece in i_PlayerThatMustCapture)
                 {
-                    if (piece.CheckMoveList(nextColumn,nextRow) == true)
+                    if ((piece.Column == i_CurrentPlace.Column) && (piece.Row == i_CurrentPlace.Row))
                     {
-                        isMoveAvailable = true;
-                        //MoveThePiece
-                        break;
+
                     }
                 }
             }
 
+            return isValid;
+        }
+        public List<GamePiece> PiecesThatMustCapture()
+        {
+            /*this method will check with the gameboard if there are player owned pieces
+              that must capture, and will update the m_CanCapture field a well as return
+              a list of those pieces.
+            */
+            List<GamePiece> mustCapturePieces = new List<GamePiece>;
+
+            foreach(GamePiece piece in m_AvailablePieces)
+            {
+                if (piece.CanCapture == true)
+                {
+                    mustCapturePieces.Add(piece);
+                    m_CanCapture = true;
+                }
+            }
+
+            return mustCapturePieces;
         }
 
     }

@@ -42,6 +42,7 @@
     <Compile Include="Game.cs" />
     <Compile Include="GameBoard.cs" />
     <Compile Include="GamePiece.cs" />
+    <Compile Include="PieceSymbol.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
   </ItemGroup>

@@ -13,18 +13,28 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
             PlayerVsPlayer = 1,
             PlayerVsComputer = 2,
         }
+        public enum eGameSymbols
+        {
+            PlayerOneRegular = 'X',
+            PlayerOneKing = 'K',
+            PlayerTwoRegular = 'O',
+            PlayerTwoKing = 'U',
+        }
         private const bool v_ComputerPlayer = true;
         private eGameType TypeOfTheGame;
         private GameBoard m_BoardData;
         private Player m_PlayerOne;
         private Player m_PlayerTwo;
         private Player m_CurrentPlayer;
+        private Player m_NextPlayer;
         private Game(string i_NamePlayerOne, string i_NamePlayerTwo, int i_BoardSize, eGameType i_GameType)
         {
             TypeOfTheGame = i_GameType;
 
             m_BoardData = new GameBoard(i_BoardSize);
-            m_PlayerOne = new Player(i_NamePlayerOne,!v_ComputerPlayer,'X', m_BoardData);
+            m_PlayerOne = new Player(i_NamePlayerOne,!v_ComputerPlayer,eGameSymbols.PlayerOneRegular, m_BoardData);
+            m_CurrentPlayer = m_PlayerOne;
+            m_PlayerOne.MoveDirection = Player.eMoveDirection.Up;
 
             if (i_GameType == eGameType.PlayerVsPlayer)
             {
@@ -34,7 +44,8 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
             {
                 m_PlayerTwo = new Player(i_NamePlayerTwo, v_ComputerPlayer,'O', m_BoardData);
             }
-
+            m_NextPlayer = m_PlayerTwo;
+            m_PlayerTwo.MoveDirection = Player.eMoveDirection.Down;
         }
         public static Game Initialize()
         {
@@ -81,6 +92,15 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
 
             return name;
         }
+        private void convertStringToBoardPositions(string i_NextMove, out BoardPosition o_CurrentPosition, out BoardPosition o_NextPosition)
+        {
+            o_CurrentPosition = new BoardPosition();
+            o_NextPosition = new BoardPosition();
+            o_CurrentPosition.Column = i_NextMove[0] - 'A';
+            o_CurrentPosition.Row = i_NextMove[1] - 'a';
+            o_NextPosition.Column = i_NextMove[3] - 'A';
+            o_NextPosition.Row = i_NextMove[4] - 'a';
+        }
         private static bool checkGameTypeOption(eGameType i_GameTypeOption)
         {
             bool isValid = true;
@@ -102,27 +122,21 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
 
             while (gameOver == false)
             {
-                m_CurrentPlayer = m_PlayerOne; //TODO - add a swap method to exchange curr player and next player.
-                Console.Write("{0}'s turn: ", m_CurrentPlayer.Name);
-
+                List<GamePiece> PiecesThatMustCapture;
+                PiecesThatMustCapture = m_CurrentPlayer.PiecesThatMustCapture(); //first
+                //we check if there are pieces that must capture
+                BoardPosition CurrentPlace;
+                BoardPosition NextPlace;
                 do
                 {
-                    nextMove = Console.ReadLine();
+                    do
+                    {
+                        nextMove = Console.ReadLine();
+                    } while (checkMoveInputValidity(nextMove) == false);
+                    convertStringToBoardPositions(nextMove,out CurrentPlace,out NextPlace);
+                } while (m_CurrentPlayer.CheckMoveAvailabillity(CurrentPlace, NextPlace, PiecesThatMustCapture) == false);
 
-
-                    /*
-                     use a method to analyze the move like so:
-                     nextMove[0] = pieceCol
-                     nextMove[1] = pieceRow
-                     check if such piece exists (nextMove[2] supposed to be '>')
-                     nextMove[3] = pieceNextPlaceCol
-                     nextMove[4] = pieceNextPlaceRow
-                     check if the place is available - have the game board check if the place is empty and if not
-                                                        check if it is an opponent piece that can be eaten.
-                     to calculate the column from the letter it is assigned we use nextMove[0 or 3] - 'A'
-                     to calculate the row from the letter it is assigned we use nextMove[1 or 4] - 'a'
-                     */
-                } while ((checkMoveInputValidity(nextMove) == false) && (m_CurrentPlayer.CheckMoveAvailabillity(nextMove) == false))
+                swapActivePlayer(ref m_CurrentPlayer, ref m_NextPlayer);
             }
 
 
@@ -193,6 +207,13 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
             }
 
             return isValid;
+        }
+        private void swapActivePlayer(ref Player i_ActivePlayer, ref Player i_NextPlayer)
+        {
+            Player temp;
+            temp = i_ActivePlayer;
+            i_ActivePlayer = i_NextPlayer;
+            i_NextPlayer = temp;
         }
         
     }
