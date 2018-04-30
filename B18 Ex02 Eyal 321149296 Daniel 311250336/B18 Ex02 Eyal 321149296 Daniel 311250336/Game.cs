@@ -60,8 +60,10 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
 
             do
             {
-                Console.WriteLine("Please enter a valid size of the board (6/8/10): ");
-                boardSize = int.Parse(Console.ReadLine());
+                do
+                {
+                  Console.WriteLine("Please enter a valid size of the board (6/8/10): ");
+                } while (int.TryParse(Console.ReadLine(), out boardSize) == false);
             } while (GameBoard.CheckBoardSizeValidity(boardSize) == false);
 
             do
