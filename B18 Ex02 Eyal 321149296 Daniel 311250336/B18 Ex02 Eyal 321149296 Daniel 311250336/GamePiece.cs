@@ -125,8 +125,8 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
             if (m_BoardData.CheckCellAvailability(ref io_NewPosition, m_Symbol, io_NewPosition - m_Position,
                             out io_CapturedAPiece) == true)
             {
-                m_AvailableMovement.Add(io_NewPosition);
                 m_CanCapture = io_CapturedAPiece;
+                m_AvailableMovement.Add(io_NewPosition);
             }
         }
     }
