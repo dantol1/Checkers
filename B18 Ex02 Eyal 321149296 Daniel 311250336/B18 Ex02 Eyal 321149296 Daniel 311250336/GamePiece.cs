@@ -8,9 +8,30 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
     {
         private bool m_IsKing = false;
         private readonly PieceSymbol m_Symbol;
+        public char Symbol
+        {
+            get
+            {
+                if(m_IsKing == true)
+                {
+                    return m_Symbol.KingSymbol;
+                }
+                else
+                {
+                    return m_Symbol.RegularSymbol;
+                }
+            }
+        }
         private GameBoard m_BoardData;
         private BoardPosition m_Position;
         List<BoardPosition> m_AvailableMovement;
+        public List<BoardPosition> MoveList
+        {
+            get
+            {
+                return m_AvailableMovement;
+            }
+        }
         private readonly Player r_PiecePlayer;
         private bool m_CanCapture;
         public bool CanCapture
@@ -42,6 +63,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
         public GamePiece(int i_Column, int i_Row, char i_Symbol, GameBoard i_GameBoard, Player i_PiecePlayer)
         {
             m_BoardData = i_GameBoard;
+            m_Position = new BoardPosition();
             m_Position.Column = i_Column;
             m_Position.Row = i_Row;
             m_Symbol.RegularSymbol = i_Symbol;
@@ -49,7 +71,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
 
             m_AvailableMovement = new List<BoardPosition>(2);
         }
-        public void updateAvailableMovement()
+        public void UpdateAvailableMovement()
         {
             if (m_IsKing == true)
             {
@@ -95,7 +117,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
         public void MovePiece(BoardPosition i_NextPosition)
         {
             m_BoardData.UpdateBoardCell(m_Position, ' ');
-            m_BoardData.UpdateBoardCell(i_NextPosition, m_Symbol);
+            m_BoardData.UpdateBoardCell(i_NextPosition, Symbol);
             m_Position = i_NextPosition;
         }
         private void checkAndAddMovment(ref BoardPosition io_NewPosition, out bool io_CapturedAPiece)

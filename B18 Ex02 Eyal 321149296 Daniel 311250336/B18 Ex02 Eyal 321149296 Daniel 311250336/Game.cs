@@ -33,18 +33,19 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
 
             m_BoardData = new GameBoard(i_BoardSize);
             m_PlayerOne = new Player(i_NamePlayerOne,!v_ComputerPlayer,eGameSymbols.PlayerOneRegular, m_BoardData);
-            m_CurrentPlayer = m_PlayerOne;
             m_PlayerOne.MoveDirection = Player.eMoveDirection.Up;
 
             if (i_GameType == eGameType.PlayerVsPlayer)
             {
-                m_PlayerTwo = new Player(i_NamePlayerTwo, !v_ComputerPlayer,'O', m_BoardData);
+                m_PlayerTwo = new Player(i_NamePlayerTwo, !v_ComputerPlayer, eGameSymbols.PlayerTwoRegular, m_BoardData);
             }
             else
             {
-                m_PlayerTwo = new Player(i_NamePlayerTwo, v_ComputerPlayer,'O', m_BoardData);
+                m_PlayerTwo = new Player(i_NamePlayerTwo, v_ComputerPlayer, eGameSymbols.PlayerTwoRegular, m_BoardData);
             }
-            m_NextPlayer = m_PlayerTwo;
+
+            m_CurrentPlayer = m_PlayerTwo;
+            m_NextPlayer = m_PlayerOne;
             m_PlayerTwo.MoveDirection = Player.eMoveDirection.Down;
         }
         public static Game Initialize()
@@ -122,6 +123,11 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
 
             while (gameOver == false)
             {
+                if (m_CurrentPlayer.CanCapture == false)
+                {
+                    swapActivePlayer(ref m_CurrentPlayer, ref m_NextPlayer);
+                }
+                m_CurrentPlayer.UpdatePiecesMoves();
                 List<GamePiece> PiecesThatMustCapture;
                 PiecesThatMustCapture = m_CurrentPlayer.PiecesThatMustCapture(); //first
                 //we check if there are pieces that must capture
@@ -131,12 +137,17 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                 {
                     do
                     {
+                        Console.Write("{0}'s turn: ", m_CurrentPlayer.Name);
                         nextMove = Console.ReadLine();
                     } while (checkMoveInputValidity(nextMove) == false);
                     convertStringToBoardPositions(nextMove,out CurrentPlace,out NextPlace);
                 } while (m_CurrentPlayer.CheckMoveAvailabillity(CurrentPlace, NextPlace, PiecesThatMustCapture) == false);
 
-                swapActivePlayer(ref m_CurrentPlayer, ref m_NextPlayer);
+                Screen.Clear();
+                printGameBoard();
+                Console.WriteLine("{0}'s move was: {1}", m_CurrentPlayer.Name, nextMove);
+                m_CurrentPlayer.CanCapture = false;
+                m_CurrentPlayer.UpdatePiecesMoves();
             }
 
 

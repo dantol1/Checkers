@@ -7,8 +7,8 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
 {
     public class BoardPosition
     {
-        private int m_Column;
-        private int m_Row;
+        private int m_Column = 0;
+        private int m_Row = 0;
         public int Column
         {
             get

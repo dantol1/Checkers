@@ -97,16 +97,15 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
         }
         public bool CheckMoveAvailabillity(BoardPosition i_CurrentPlace, BoardPosition i_NextPlace ,List<GamePiece> i_PlayerThatMustCapture)
         {
-            bool isValid = true;
+            bool isValid;
+
             if(m_CanCapture == true)
             {
-                foreach (GamePiece piece in i_PlayerThatMustCapture)
-                {
-                    if ((piece.Column == i_CurrentPlace.Column) && (piece.Row == i_CurrentPlace.Row))
-                    {
-
-                    }
-                }
+                checkMove(i_CurrentPlace, i_NextPlace, i_PlayerThatMustCapture, out isValid);
+            }
+            else
+            {
+                checkMove(i_CurrentPlace, i_NextPlace, m_AvailablePieces, out isValid);
             }
 
             return isValid;
@@ -117,7 +116,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
               that must capture, and will update the m_CanCapture field a well as return
               a list of those pieces.
             */
-            List<GamePiece> mustCapturePieces = new List<GamePiece>;
+            List<GamePiece> mustCapturePieces = new List<GamePiece>();
 
             foreach(GamePiece piece in m_AvailablePieces)
             {
@@ -130,6 +129,31 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
 
             return mustCapturePieces;
         }
+        private void checkMove(BoardPosition i_CurrentPlace, BoardPosition i_NextPlace, List<GamePiece> i_AvailablePieces, out bool o_moveValidity)
+        {
+            o_moveValidity = false;
 
+            foreach (GamePiece piece in i_AvailablePieces)
+            {
+                if ((piece.Column == i_CurrentPlace.Column) && (piece.Row == i_CurrentPlace.Row))
+                {
+                    foreach (BoardPosition move in piece.MoveList)
+                    {
+                        if ((move.Column == i_NextPlace.Column) && (move.Row == i_NextPlace.Row))
+                        {
+                            o_moveValidity = true;
+                            piece.MovePiece(move);
+                        }
+                    }
+                }
+            }
+        }
+        public void UpdatePiecesMoves()
+        {
+            foreach(GamePiece piece in m_AvailablePieces)
+            {
+                piece.UpdateAvailableMovement();
+            }
+        }
     }
 }

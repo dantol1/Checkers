@@ -4,7 +4,7 @@ using System.Text;
 
 namespace B18_Ex02_Eyal_321149296_Daniel_311250336
 {
-    struct PieceSymbol
+    public struct PieceSymbol
     {
         private char m_RegularSymbol;
         public char RegularSymbol

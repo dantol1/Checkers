@@ -85,7 +85,6 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
             if (Enum.IsDefined(typeof(eGameBoardSize), i_BoardSize) == false)
             {
                 isValid = false;
-                Console.WriteLine("Board Size not valid");
             }
 
             
@@ -108,11 +107,15 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
             else if (m_Board[io_GamePieceNewBoardPosition.Row, io_GamePieceNewBoardPosition.Column] != i_GamePieceSymbol)
             { //the cell the piece wants to move to has an opponent piece
                 io_GamePieceNewBoardPosition = io_GamePieceNewBoardPosition + i_MoveDirection;
-                if (m_Board[io_GamePieceNewBoardPosition.Row, io_GamePieceNewBoardPosition.Column] == ' ')
-                { //the piece can capture the opponent piece.
-                    isAvailable = true;
-                    o_PieceCaptured = true;
+                if (CheckIfInMargins(io_GamePieceNewBoardPosition) == true)
+                {
+                    if (m_Board[io_GamePieceNewBoardPosition.Row, io_GamePieceNewBoardPosition.Column] == ' ')
+                    { //the piece can capture the opponent piece.
+                        isAvailable = true;
+                        o_PieceCaptured = true;
+                    }
                 }
+
             }
 
             return isAvailable;
@@ -137,7 +140,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
             {
                 isValid = false;
             }
-            else if (i_PositionToCheck.Row >= (int)m_Size)
+            else if (i_PositionToCheck.Column >= (int)m_Size)
             {
                 isValid = false;
             }
