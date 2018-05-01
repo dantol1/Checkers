@@ -118,38 +118,47 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
         }
         public void play()
         {
+            bool quitGame = false;
             string nextMove;
             Screen.Clear();
             printGameBoard();
             bool gameOver = false;
-
-            while (gameOver == false)
+            while (quitGame == false)
             {
-                if (m_CurrentPlayer.CanCapture == false)
+                while (gameOver == false)
                 {
-                    swapActivePlayer(ref m_CurrentPlayer, ref m_NextPlayer);
-                }
-                m_CurrentPlayer.UpdatePiecesMoves();
-                List<GamePiece> PiecesThatMustCapture;
-                PiecesThatMustCapture = m_CurrentPlayer.PiecesThatMustCapture(); //first
-                //we check if there are pieces that must capture
-                BoardPosition CurrentPlace;
-                BoardPosition NextPlace;
-                do
-                {
+                    if (m_CurrentPlayer.CanCapture == false)
+                    {
+                        swapActivePlayer(ref m_CurrentPlayer, ref m_NextPlayer);
+                        m_CurrentPlayer.UpdatePiecesMoves();
+                    }
+
+                    List<GamePiece> PiecesThatMustCapture;
+                    PiecesThatMustCapture = m_CurrentPlayer.PiecesThatMustCapture(); //first
+                                                                                     //we check if there are pieces that must capture
+                    BoardPosition CurrentPlace;
+                    BoardPosition NextPlace;
                     do
                     {
-                        Console.Write("{0}'s turn: ", m_CurrentPlayer.Name);
-                        nextMove = Console.ReadLine();
-                    } while (checkMoveInputValidity(nextMove) == false);
-                    convertStringToBoardPositions(nextMove,out CurrentPlace,out NextPlace);
-                } while (m_CurrentPlayer.CheckMoveAvailabillity(CurrentPlace, NextPlace, PiecesThatMustCapture) == false);
+                        do
+                        {
+                            Console.Write("{0}'s turn: ", m_CurrentPlayer.Name);
+                            nextMove = Console.ReadLine();
+                        } while (checkMoveInputValidity(nextMove) == false);
+                        convertStringToBoardPositions(nextMove, out CurrentPlace, out NextPlace);
+                    } while (m_CurrentPlayer.CheckMoveAvailabillityAndMove(CurrentPlace, NextPlace, PiecesThatMustCapture) == false);
 
-                Screen.Clear();
-                printGameBoard();
-                Console.WriteLine("{0}'s move was: {1}", m_CurrentPlayer.Name, nextMove);
-                m_CurrentPlayer.CanCapture = false;
-                m_CurrentPlayer.UpdatePiecesMoves();
+                    Screen.Clear();
+                    printGameBoard();
+                    Console.WriteLine("{0}'s move was: {1}", m_CurrentPlayer.Name, nextMove);
+                    m_CurrentPlayer.CanCapture = false;
+                    if (m_CurrentPlayer.CapturedAPiece == true)
+                    {
+                        m_NextPlayer.RemovePieces();
+                        m_CurrentPlayer.UpdatePiecesMoves();
+                        m_CurrentPlayer.CapturedAPiece = false;
+                    }
+                }
             }
 
 

@@ -34,6 +34,14 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
         }
         private readonly Player r_PiecePlayer;
         private bool m_CanCapture;
+        private bool m_CapturedAPiece = false;
+        public bool CapturedAPiece
+        {
+            get
+            {
+                return m_CapturedAPiece;
+            }
+        }
         public bool CanCapture
         {
             get
@@ -71,15 +79,51 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
 
             m_AvailableMovement = new List<BoardPosition>(2);
         }
+
         public void UpdateAvailableMovement()
         {
             if (m_IsKing == true)
             {
+                BoardPosition newPositionLeftUp = new BoardPosition();
+                BoardPosition newPositionRightUp = new BoardPosition();
+                BoardPosition newPositionLeftDown = new BoardPosition();
+                BoardPosition newPositionRightDown = new BoardPosition();
+
+                newPositionRightUp.Row = newPositionLeftUp.Row = m_Position.Row - 1;
+                newPositionRightDown.Row = newPositionLeftDown.Row = m_Position.Row + 1;
+                newPositionRightDown.Column = newPositionRightUp.Column = m_Position.Column + 1;
+                newPositionLeftDown.Column = newPositionLeftUp.Column = m_Position.Column - 1;
+
+                if (m_BoardData.CheckIfInMargins(newPositionRightUp) == true)
+                {
+                    checkAndAddMovment(ref newPositionRightUp);
+                }
+
+                if (m_BoardData.CheckIfInMargins(newPositionRightDown) == true)
+                {
+                    checkAndAddMovment(ref newPositionRightDown);
+                }
+
+                if (m_BoardData.CheckIfInMargins(newPositionLeftUp) == true)
+                {
+                    checkAndAddMovment(ref newPositionLeftUp);
+                }
+
+                if (m_BoardData.CheckIfInMargins(newPositionLeftDown) == true)
+                {
+                    checkAndAddMovment(ref newPositionLeftDown);
+                }
+
+                if (m_CanCapture == true)
+                {
+                    r_PiecePlayer.CanCapture = m_CanCapture;
+                }
 
             }
             else
             {
                 int moveDirection;
+
                 if (m_Symbol == 'X')
                 {
                     moveDirection = -1;
@@ -88,6 +132,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                 {
                     moveDirection = 1;
                 }
+
                 BoardPosition newPositionLeft = new BoardPosition();
                 BoardPosition newPositionRight = new BoardPosition();
 
@@ -97,15 +142,12 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
 
                 if (m_BoardData.CheckIfInMargins(newPositionLeft) == true)
                 {
-                    bool capturedAPiece;
-
-                    checkAndAddMovment(ref newPositionLeft, out capturedAPiece);
+                    checkAndAddMovment(ref newPositionLeft);
                 }
+
                 if (m_BoardData.CheckIfInMargins(newPositionRight) == true)
                 {
-                    bool capturedAPiece;
-
-                    checkAndAddMovment(ref newPositionRight, out capturedAPiece);
+                    checkAndAddMovment(ref newPositionRight);
                 }
             }
 
@@ -114,75 +156,96 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                 r_PiecePlayer.CanCapture = m_CanCapture;
             }
         }
+
         public void MovePiece(BoardPosition i_NextPosition)
         {
             m_BoardData.UpdateBoardCell(m_Position, ' ');
             m_BoardData.UpdateBoardCell(i_NextPosition, Symbol);
-            m_Position = i_NextPosition;
-        }
-        private void checkAndAddMovment(ref BoardPosition io_NewPosition, out bool io_CapturedAPiece)
-        {
-            if (m_BoardData.CheckCellAvailability(ref io_NewPosition, m_Symbol, io_NewPosition - m_Position,
-                            out io_CapturedAPiece) == true)
+            m_CapturedAPiece = checkMoveForCapturePossibility(i_NextPosition, m_Position);
+            r_PiecePlayer.CapturedAPiece = m_CapturedAPiece;
+            if(m_CapturedAPiece == true)
             {
-                m_CanCapture = io_CapturedAPiece;
-                m_AvailableMovement.Add(io_NewPosition);
+                removeCapturedPieceFromBoard(i_NextPosition, m_Position);
+                m_CanCapture = false;
+            }
+            m_Position = i_NextPosition;
+            if (m_Symbol == 'X')
+            {
+                if(m_Position.Row == 0)
+                {
+                    m_IsKing = true;
+                }
+            }
+            else
+            {
+                if (m_Position.Row == m_BoardData.GameBoardSize - 1)
+                {
+                    m_IsKing = true;
+                }
             }
         }
+
+        private void removeCapturedPieceFromBoard(BoardPosition i_NextPosition, BoardPosition i_CurrPosition)
+        {
+            BoardPosition capturedPiece;
+
+            capturedPiece = i_NextPosition - i_CurrPosition;
+            capturedPiece.Column = capturedPiece.Column / 2;
+            capturedPiece.Row = capturedPiece.Row / 2;
+            capturedPiece = i_CurrPosition + capturedPiece;
+            m_BoardData.UpdateBoardCell(capturedPiece, ' ');
+        }
+
+        private void checkAndAddMovment(ref BoardPosition io_NewPosition)
+        {
+            bool moveCaptureAPiece = false;
+
+            if (m_BoardData.CheckCellAvailabilityAndUpdateCaptureLocation(ref io_NewPosition, m_Symbol, io_NewPosition - m_Position,
+                            out moveCaptureAPiece) == true)
+            {
+                if (m_CanCapture == false)
+                {
+                    m_CanCapture = moveCaptureAPiece;
+                }
+                if (m_CanCapture == true)
+                {
+                    if (moveCaptureAPiece == true)
+                    {
+                        m_AvailableMovement.Add(io_NewPosition);
+                    }
+                }
+                else
+                {
+                    m_AvailableMovement.Add(io_NewPosition);
+                }
+            }
+        }
+
+        public void CheckIfCanCaptureAndUpdateMoveListAccrodingly()
+        {
+            if (m_CanCapture == true)
+            {
+                for(int i = m_AvailableMovement.Count - 1 ; i >= 0; i--)
+                {
+                    if (checkMoveForCapturePossibility(m_AvailableMovement[i], m_Position) == false)
+                    {
+                        m_AvailableMovement.Remove(m_AvailableMovement[i]);
+                    }
+                }
+            }
+        }
+
+        private bool checkMoveForCapturePossibility(BoardPosition i_Move, BoardPosition i_CurrentPosition)
+        {
+            bool capturePossible = false;
+            BoardPosition jump = i_Move - i_CurrentPosition;
+
+            if(Math.Abs(jump.Row) > 1)
+            {
+                capturePossible = true;
+            }
+
+            return capturePossible;
+        } 
     }
 }
-
-
-
-
-
-//public bool CanCaptureAPiece(Player.eMoveDirection i_MoveDirection)
-//{
-//    bool canCapture = false;
-
-//    if(m_IsKing == true)
-//    {
-
-//    }
-//    else
-//    {
-//        BoardPosition newPosition = new BoardPosition();
-//        newPosition.Row = m_Position.Row + (int)i_MoveDirection;
-//        newPosition.Column = m_Position.Column + 1;
-//        if (m_BoardData.CheckIfInMargins(newPosition) == true)
-//        {
-//            if (m_Symbol != m_BoardData.GetCellSymbol(newPosition.Row, newPosition.Column))
-//            {
-//                newPosition.Row = m_Position.Row + (int)i_MoveDirection;
-//                newPosition.Column = m_Position.Column + 1;
-//                if (m_BoardData.CheckIfInMargins(newPosition) == true)
-//                {
-//                    if (m_BoardData.GetCellSymbol(newPosition.Row, newPosition.Column) == ' ')
-//                    {
-//                        canCapture = true;
-//                    }
-//                    newPosition.Row = m_Position.Row - (int)i_MoveDirection;
-//                    newPosition.Column = m_Position.Column - 1;
-//                }
-//            }
-//        }
-
-//        newPosition.Column = m_Position.Column - 2;
-//        if (m_BoardData.CheckIfInMargins(newPosition) == true)
-//        {
-//            if (m_Symbol != m_BoardData.GetCellSymbol(newPosition.Row, newPosition.Column))
-//            {
-//                newPosition.Row = m_Position.Row + (int)i_MoveDirection;
-//                newPosition.Column = m_Position.Column - 1;
-//                if (m_BoardData.CheckIfInMargins(newPosition) == true)
-//                {
-//                    if (m_BoardData.GetCellSymbol(newPosition.Row, newPosition.Column) == ' ')
-//                    {
-//                        canCapture = true;
-//                    }
-//                }
-//            }
-//        }
-//    }
-//    return canCapture;
-//}

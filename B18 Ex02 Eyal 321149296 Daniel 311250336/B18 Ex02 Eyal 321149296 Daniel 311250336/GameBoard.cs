@@ -95,7 +95,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
             return m_Board[i_Row, i_Col];
         }
 
-        public bool CheckCellAvailability(ref BoardPosition io_GamePieceNewBoardPosition, PieceSymbol i_GamePieceSymbol, BoardPosition i_MoveDirection, out bool o_PieceCaptured)
+        public bool CheckCellAvailabilityAndUpdateCaptureLocation(ref BoardPosition io_GamePieceNewBoardPosition, PieceSymbol i_GamePieceSymbol, BoardPosition i_MoveDirection, out bool o_PieceCaptured)
         {
             bool isAvailable = false;
             o_PieceCaptured = false;
