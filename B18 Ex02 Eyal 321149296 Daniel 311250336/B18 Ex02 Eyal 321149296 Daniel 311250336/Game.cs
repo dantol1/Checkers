@@ -66,12 +66,15 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                 } while (int.TryParse(Console.ReadLine(), out boardSize) == false);
             } while (GameBoard.CheckBoardSizeValidity(boardSize) == false);
 
+            int userChoice;
+            bool correctUserChoice;
             do
             {
                 Console.WriteLine("For Player vs. Player Press (1) {0}For Player vs. Computer Press (2)", Environment.NewLine);
-                gameTypeOption = (eGameType)int.Parse(Console.ReadLine());
-            } while (checkGameTypeOption(gameTypeOption) == false);
+                correctUserChoice = int.TryParse(Console.ReadLine(), out userChoice);
+            } while ((correctUserChoice == false) && (checkGameTypeOption((eGameType)userChoice) == false));
 
+            gameTypeOption = (eGameType) userChoice;
             if (gameTypeOption == eGameType.PlayerVsPlayer)
             {
                 namePlayerTwo = getName();
