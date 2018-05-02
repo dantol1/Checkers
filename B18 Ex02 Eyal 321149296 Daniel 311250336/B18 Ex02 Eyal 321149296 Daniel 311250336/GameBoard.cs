@@ -28,12 +28,16 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
 
             m_Board = new char[i_BoardSize, i_BoardSize];
 
-            //Putting all the Game Pieces on board
-            for (int i = 0; i < i_BoardSize/2-1; i++)
+            InitiliazeGamePiecesOnBoard();
+        }
+
+        public void InitiliazeGamePiecesOnBoard()
+        {
+            for (int i = 0; i < (int)(m_Size) / 2 - 1; i++)
             {
                 if (i % 2 == 0)
                 {
-                    for (int j = 0; j < i_BoardSize; j += 2)
+                    for (int j = 0; j < (int)(m_Size); j += 2)
                     {
                         m_Board[i, j] = ' ';
                         m_Board[i, j + 1] = 'O';
@@ -41,7 +45,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                 }
                 else
                 {
-                    for (int j = 0; j < i_BoardSize; j += 2)
+                    for (int j = 0; j < (int)(m_Size); j += 2)
                     {
                         m_Board[i, j] = 'O';
                         m_Board[i, j + 1] = ' ';
@@ -49,19 +53,19 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                 }
             }
             //Putting two space lines between players
-            for (int i = i_BoardSize/2-1; i< i_BoardSize / 2 + 1; i++)
+            for (int i = (int)(m_Size) / 2 - 1; i < (int)(m_Size) / 2 + 1; i++)
             {
-                for (int j = 0; j < i_BoardSize; j++)
+                for (int j = 0; j < (int)(m_Size); j++)
                 {
                     m_Board[i, j] = ' ';
                 }
             }
             //Putting the opposite player game piece on board
-            for (int i = i_BoardSize / 2 + 1; i < i_BoardSize; i++)
+            for (int i = (int)(m_Size) / 2 + 1; i < (int)(m_Size); i++)
             {
                 if (i % 2 == 0)
                 {
-                    for (int j = 0; j < i_BoardSize; j += 2)
+                    for (int j = 0; j < (int)(m_Size); j += 2)
                     {
                         m_Board[i, j] = ' ';
                         m_Board[i, j + 1] = 'X';
@@ -69,14 +73,13 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                 }
                 else
                 {
-                    for (int j = 0; j < i_BoardSize; j += 2)
+                    for (int j = 0; j < (int)(m_Size); j += 2)
                     {
                         m_Board[i, j] = 'X';
                         m_Board[i, j + 1] = ' ';
                     }
                 }
             }
-
         }
         public static bool CheckBoardSizeValidity(int i_BoardSize)
         {

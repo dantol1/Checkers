@@ -7,6 +7,18 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
     public class Player
     {
         private const int k_MaxNameLength = 20;
+        private int m_Score = 0;
+        public int Score
+        {
+            get
+            {
+                return m_Score;
+            }
+            set
+            {
+                m_Score = value;
+            }
+        }
         private string m_Name;
         public string Name
         {
@@ -51,6 +63,13 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
             }
         }
         List <GamePiece> m_AvailablePieces = null;
+        public List<GamePiece> AvailablePieces
+        {
+            get
+            {
+                return m_AvailablePieces;
+            }
+        }
         public enum eMoveDirection
         {
             Down = 1,
@@ -68,7 +87,22 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                 m_MoveDirection = value;
             }
         }
+        public void ConnectThePiecesToThePlayer()
+        {
+            m_AvailablePieces.Clear();
 
+            for (int i = 0; i < m_BoardData.GameBoardSize; i++)
+            {
+                for (int j = 0; j < m_BoardData.GameBoardSize; j++)
+                {
+                    if (m_BoardData.GetCellSymbol(i, j) == r_PlayerSymbol)
+                    {
+                        GamePiece newGamePiece = new GamePiece(j, i, r_PlayerSymbol.RegularSymbol, m_BoardData, this);
+                        m_AvailablePieces.Add(newGamePiece);
+                    }
+                }
+            }
+        }
         public Player(string i_PlayerName, bool i_IsComputer,Game.eGameSymbols i_PlayerSymbol,GameBoard i_GameBoard)
         {
             m_Name = i_PlayerName;
@@ -78,19 +112,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
 
             m_AvailablePieces = new List <GamePiece>((i_GameBoard.GameBoardSize / 2) * ((i_GameBoard.GameBoardSize / 2) - 1));
 
-            for (int i = 0; i < i_GameBoard.GameBoardSize; i++)
-            {
-                for (int j = 0; j < i_GameBoard.GameBoardSize; j++)
-                {
-                    if (i_GameBoard.GetCellSymbol(i,j) == r_PlayerSymbol)
-                    {
-                        GamePiece newGamePiece = new GamePiece(j, i, r_PlayerSymbol.RegularSymbol,m_BoardData, this);
-                        m_AvailablePieces.Add(newGamePiece);
-                    }
-                }
-            }
-
-
+            ConnectThePiecesToThePlayer();
         }
         public static bool CheckNameValidity(string i_NamePlayerOne)
         {
@@ -192,7 +214,41 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                 }
             }
         }
+        public int CalculateScore()
+        {
+            int sumOfPieces = 0;
 
+            foreach (GamePiece piece in AvailablePieces)
+            {
+                if (piece.isKing == true)
+                {
+                    sumOfPieces = sumOfPieces + 4;
+                }
+                else
+                {
+                    sumOfPieces++;
+                }
+            }
+
+            return sumOfPieces;
+        }
+        public void CalculateAndSetScore()
+        {
+            int sumOfPieces = m_Score;
+            foreach (GamePiece piece in AvailablePieces)
+            {
+                if (piece.isKing == true)
+                {
+                    sumOfPieces = sumOfPieces + 4;
+                }
+                else
+                {
+                    sumOfPieces++;
+                }
+            }
+
+            m_Score = sumOfPieces;
+        }
         public string ComputerPlayerMove(List<GamePiece> i_PiecesThatMustCapture)
         {
             Random randomPiece = new Random();

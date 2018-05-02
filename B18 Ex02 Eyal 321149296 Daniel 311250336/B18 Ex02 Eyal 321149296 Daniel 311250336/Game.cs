@@ -8,6 +8,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
     //UI Class
     public class Game
     {
+        private readonly char r_QuitGame = 'Q';
         private enum eGameType
         {
             PlayerVsPlayer = 1,
@@ -23,8 +24,8 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
         private const bool v_ComputerPlayer = true;
         private eGameType TypeOfTheGame;
         private GameBoard m_BoardData;
-        private Player m_PlayerOne;
-        private Player m_PlayerTwo;
+        private Player m_PlayerOne; // 'X'
+        private Player m_PlayerTwo; // 'O'
         private Player m_CurrentPlayer;
         private Player m_NextPlayer;
         private Game(string i_NamePlayerOne, string i_NamePlayerTwo, int i_BoardSize, eGameType i_GameType)
@@ -119,14 +120,18 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
         }
         public void play()
         {
-            bool quitGame = false;
+            int exitGameOrRetry;
+            bool legalMove = false;
+            bool endOfTheGame = false;
             string nextMove;
             Screen.Clear();
             printGameBoard();
-            bool gameOver = false;
-            while (quitGame == false)
+            bool quitGame = false;
+
+            while (endOfTheGame == false)
             {
-                while (gameOver == false)
+                quitGame = false;
+                while (checkIfGameIsOver() == false)
                 {
                     if (m_CurrentPlayer.CanCapture == false)
                     {
@@ -151,9 +156,37 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                             {
                                 Console.Write("{0}'s turn: ", m_CurrentPlayer.Name);
                                 nextMove = Console.ReadLine();
-                            } while (checkMoveInputValidity(nextMove) == false);
+                                if (nextMove[0] == r_QuitGame)
+                                {
+                                    if (checkIfCurrentPlayerIsLosing() == true)
+                                    {
+                                        swapActivePlayer(ref m_CurrentPlayer, ref m_NextPlayer); //we want
+                                        //the current player to be always the winner
+                                        quitGame = true;
+                                        break;
+                                    }
+                                }
+                                legalMove = checkMoveInputValidity(nextMove);
+                                if (legalMove == false)
+                                {
+                                    Console.WriteLine("Illegal Move");
+                                }
+                            } while (legalMove == false);
+                            if (quitGame == true)
+                            {
+                                break;
+                            }
                             convertStringToBoardPositions(nextMove, out CurrentPlace, out NextPlace);
-                        } while (m_CurrentPlayer.CheckMoveAvailabillityAndMove(CurrentPlace, NextPlace, PiecesThatMustCapture) == false);
+                            legalMove = m_CurrentPlayer.CheckMoveAvailabillityAndMove(CurrentPlace, NextPlace, PiecesThatMustCapture);
+                            if (legalMove == false)
+                            {
+                                Console.WriteLine("Illegal Move");
+                            }
+                        } while (legalMove == false);
+                    }
+                    if (quitGame == true)
+                    {
+                        break;
                     }
 
                     Screen.Clear();
@@ -167,10 +200,66 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                         m_CurrentPlayer.CapturedAPiece = false;
                     }
                 }
+                Screen.Clear();
+                CalculatePlayersScore();
+                Console.WriteLine("{0} Wins! with score: {1}{2}{3} score: {4}", m_CurrentPlayer.Name, m_CurrentPlayer.Score, Environment.NewLine, m_NextPlayer.Name, m_NextPlayer.Score);
+                do
+                {
+                    Console.WriteLine("Press 1 to Retry{0}Press 2 to Exit Game", Environment.NewLine);
+                } while ((int.TryParse(Console.ReadLine(),out exitGameOrRetry) == false) && (checkExitOrRetryInput(exitGameOrRetry) == false));
+                if (exitGameOrRetry == 1)
+                { //Initiliazation of game pieces on the board, and connecting them to the player
+                    m_BoardData.InitiliazeGamePiecesOnBoard();
+                    m_PlayerOne.ConnectThePiecesToThePlayer();
+                    m_PlayerTwo.ConnectThePiecesToThePlayer();
+                    m_CurrentPlayer = m_PlayerTwo;
+                    m_NextPlayer = m_PlayerOne;
+                    m_PlayerOne.CanCapture = false;
+                    m_PlayerTwo.CanCapture = false;
+                    Screen.Clear();
+                    printGameBoard();
+                }
+                else
+                {
+                    endOfTheGame = true;
+                }
+               
             }
 
 
         }
+
+        private bool checkExitOrRetryInput(int i_ExitGameOrRetry)
+        {
+            bool isValidInput = false;
+
+            if ((i_ExitGameOrRetry == 1) || (i_ExitGameOrRetry == 2))
+            {
+                isValidInput = true;
+            }
+
+            return isValidInput;
+        }
+
+        private void CalculatePlayersScore()
+        {
+            int score = 0;
+
+            score = m_CurrentPlayer.Score + (m_CurrentPlayer.CalculateScore() - m_NextPlayer.CalculateScore());
+            m_CurrentPlayer.Score = score;
+        }
+
+        private bool checkIfCurrentPlayerIsLosing()
+        {
+            bool currentPlayerIsLosing = false;
+
+            if ((m_CurrentPlayer.Score + m_CurrentPlayer.CalculateScore()) < (m_NextPlayer.Score + m_NextPlayer.CalculateScore()))
+            {
+                currentPlayerIsLosing = true;
+            }
+            return currentPlayerIsLosing;
+        }
+
         private void printGameBoard()
         {
 
@@ -244,6 +333,16 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
             temp = i_ActivePlayer;
             i_ActivePlayer = i_NextPlayer;
             i_NextPlayer = temp;
+        }
+        private bool checkIfGameIsOver()
+        {
+            bool gameIsOver = false;
+
+            if (m_NextPlayer.AvailablePieces.Count == 0)
+            {
+                gameIsOver = true;
+            }
+            return gameIsOver;
         }
         
     }

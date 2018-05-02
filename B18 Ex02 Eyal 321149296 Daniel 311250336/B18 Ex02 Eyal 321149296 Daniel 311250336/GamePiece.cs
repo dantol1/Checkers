@@ -7,6 +7,13 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
     public class GamePiece
     {
         private bool m_IsKing = false;
+        public bool isKing
+        {
+            get
+            {
+                return m_IsKing;
+            }
+        }
         private readonly PieceSymbol m_Symbol;
         public char Symbol
         {
