@@ -42,6 +42,14 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
         private GameBoard m_BoardData;
         private readonly PieceSymbol r_PlayerSymbol;
         private readonly bool r_IsComputer = false;
+
+        public bool IsComputer
+        {
+            get
+            {
+                return  r_IsComputer;
+            }
+        }
         List <GamePiece> m_AvailablePieces = null;
         public enum eMoveDirection
         {
@@ -183,6 +191,61 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                     m_AvailablePieces.RemoveAt(i);
                 }
             }
+        }
+
+        public string ComputerPlayerMove(List<GamePiece> i_PiecesThatMustCapture)
+        {
+            Random randomPiece = new Random();
+            Random randomMove = new Random();
+            BoardPosition pieceCurrentBoardPosition  = new BoardPosition();
+            BoardPosition pieceNextBoardPosition = new BoardPosition();
+            int pieceToMove;
+            int moveToDo;
+
+            if (m_CanCapture == true)
+            {
+                pieceToMove = randomPiece.Next(i_PiecesThatMustCapture.Count) % i_PiecesThatMustCapture.Count;
+                moveToDo = randomMove.Next(i_PiecesThatMustCapture[pieceToMove].MoveList.Count) % i_PiecesThatMustCapture.Count;
+                pieceCurrentBoardPosition.Row = i_PiecesThatMustCapture[pieceToMove].Row;
+                pieceCurrentBoardPosition.Column = i_PiecesThatMustCapture[pieceToMove].Column;
+                i_PiecesThatMustCapture[pieceToMove].MovePiece(i_PiecesThatMustCapture[pieceToMove].MoveList[moveToDo]);
+                pieceNextBoardPosition.Row = i_PiecesThatMustCapture[pieceToMove].Row;
+                pieceNextBoardPosition.Column = i_PiecesThatMustCapture[pieceToMove].Column;
+            }
+            else
+            {
+                do
+                {
+                    pieceToMove = randomPiece.Next(m_AvailablePieces.Count) % m_AvailablePieces.Count;
+                } while (m_AvailablePieces[pieceToMove].MoveList.Count == 0);
+
+                moveToDo = randomMove.Next(m_AvailablePieces[pieceToMove].MoveList.Count) % m_AvailablePieces.Count;
+                pieceCurrentBoardPosition.Row = m_AvailablePieces[pieceToMove].Row;
+                pieceCurrentBoardPosition.Column = m_AvailablePieces[pieceToMove].Column;
+                m_AvailablePieces[pieceToMove].MovePiece(m_AvailablePieces[pieceToMove].MoveList[moveToDo]);
+                pieceNextBoardPosition.Row = m_AvailablePieces[pieceToMove].Row;
+                pieceNextBoardPosition.Column = m_AvailablePieces[pieceToMove].Column;
+            }
+
+
+
+            return translateBoardPositionsToString(pieceCurrentBoardPosition, pieceNextBoardPosition);
+
+        }
+
+        private string translateBoardPositionsToString(BoardPosition i_CurrentPosition, BoardPosition i_NextPosition)
+        {
+            char[] move = new char[5];
+            string moveMade;
+
+            move[0] = (char) (i_CurrentPosition.Column + 'A');
+            move[1] = (char)(i_CurrentPosition.Row + 'a');
+            move[2] = '>';
+            move[3] = (char)(i_NextPosition.Column + 'A');
+            move[4] = (char)(i_NextPosition.Row + 'a');
+            moveMade = new string(move);
+
+            return moveMade;
         }
     }
 }

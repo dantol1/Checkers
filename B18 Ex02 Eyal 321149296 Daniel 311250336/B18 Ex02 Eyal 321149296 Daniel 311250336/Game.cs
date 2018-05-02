@@ -137,17 +137,24 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                     List<GamePiece> PiecesThatMustCapture;
                     PiecesThatMustCapture = m_CurrentPlayer.PiecesThatMustCapture(); //first
                                                                                      //we check if there are pieces that must capture
-                    BoardPosition CurrentPlace;
-                    BoardPosition NextPlace;
-                    do
+                    if (m_CurrentPlayer.IsComputer == true)
                     {
+                        nextMove = m_CurrentPlayer.ComputerPlayerMove(PiecesThatMustCapture);
+                    }
+                    else
+                    {
+                        BoardPosition CurrentPlace;
+                        BoardPosition NextPlace;
                         do
                         {
-                            Console.Write("{0}'s turn: ", m_CurrentPlayer.Name);
-                            nextMove = Console.ReadLine();
-                        } while (checkMoveInputValidity(nextMove) == false);
-                        convertStringToBoardPositions(nextMove, out CurrentPlace, out NextPlace);
-                    } while (m_CurrentPlayer.CheckMoveAvailabillityAndMove(CurrentPlace, NextPlace, PiecesThatMustCapture) == false);
+                            do
+                            {
+                                Console.Write("{0}'s turn: ", m_CurrentPlayer.Name);
+                                nextMove = Console.ReadLine();
+                            } while (checkMoveInputValidity(nextMove) == false);
+                            convertStringToBoardPositions(nextMove, out CurrentPlace, out NextPlace);
+                        } while (m_CurrentPlayer.CheckMoveAvailabillityAndMove(CurrentPlace, NextPlace, PiecesThatMustCapture) == false);
+                    }
 
                     Screen.Clear();
                     printGameBoard();
