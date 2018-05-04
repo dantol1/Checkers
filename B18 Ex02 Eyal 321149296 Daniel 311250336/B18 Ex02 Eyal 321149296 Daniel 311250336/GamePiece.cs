@@ -190,6 +190,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                     m_IsKing = true;
                 }
             }
+            m_BoardData.UpdateBoardCell(m_Position, Symbol);
         }
 
         private void removeCapturedPieceFromBoard(BoardPosition i_NextPosition, BoardPosition i_CurrPosition)

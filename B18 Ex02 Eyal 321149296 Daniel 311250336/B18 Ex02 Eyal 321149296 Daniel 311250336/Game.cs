@@ -189,9 +189,6 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                         break;
                     }
 
-                    Screen.Clear();
-                    printGameBoard();
-                    Console.WriteLine("{0}'s move was: {1}", m_CurrentPlayer.Name, nextMove);
                     m_CurrentPlayer.CanCapture = false;
                     if (m_CurrentPlayer.CapturedAPiece == true)
                     {
@@ -199,6 +196,10 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                         m_CurrentPlayer.UpdatePiecesMoves();
                         m_CurrentPlayer.CapturedAPiece = false;
                     }
+
+                    Screen.Clear();
+                    printGameBoard();
+                    Console.WriteLine("{0}'s move was: {1}", m_CurrentPlayer.Name, nextMove);
                 }
                 Screen.Clear();
                 CalculatePlayersScore();
