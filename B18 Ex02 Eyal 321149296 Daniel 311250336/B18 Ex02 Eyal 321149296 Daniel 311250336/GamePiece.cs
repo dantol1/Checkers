@@ -6,7 +6,10 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
 {
     public class GamePiece
     {
+        private readonly PieceSymbol m_Symbol;
+        private readonly Player r_PiecePlayer;
         private bool m_IsKing = false;
+
         public bool isKing
         {
             get
@@ -14,7 +17,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                 return m_IsKing;
             }
         }
-        private readonly PieceSymbol m_Symbol;
+
         public char Symbol
         {
             get
@@ -29,9 +32,11 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                 }
             }
         }
+
         private GameBoard m_BoardData;
         private BoardPosition m_Position;
-        List<BoardPosition> m_AvailableMovement;
+        private List<BoardPosition> m_AvailableMovement;
+
         public List<BoardPosition> MoveList
         {
             get
@@ -39,9 +44,10 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                 return m_AvailableMovement;
             }
         }
-        private readonly Player r_PiecePlayer;
+
         private bool m_CanCapture;
         private bool m_CapturedAPiece = false;
+
         public bool CapturedAPiece
         {
             get
@@ -49,17 +55,20 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                 return m_CapturedAPiece;
             }
         }
+
         public bool CanCapture
         {
             get
             {
                 return m_CanCapture;
             }
+
             set
             {
                 m_CanCapture = value;
             }
-        }        
+        }  
+              
         public int Column
         {
             get
@@ -67,6 +76,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                 return m_Position.Column;
             }
         }
+
         public int Row
         {
             get
@@ -83,7 +93,6 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
             m_Position.Row = i_Row;
             m_Symbol.RegularSymbol = i_Symbol;
             r_PiecePlayer = i_PiecePlayer;
-
             m_AvailableMovement = new List<BoardPosition>(2);
         }
 
@@ -100,7 +109,6 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                 newPositionRightDown.Row = newPositionLeftDown.Row = m_Position.Row + 1;
                 newPositionRightDown.Column = newPositionRightUp.Column = m_Position.Column + 1;
                 newPositionLeftDown.Column = newPositionLeftUp.Column = m_Position.Column - 1;
-
                 if (m_BoardData.CheckIfInMargins(newPositionRightUp) == true)
                 {
                     checkAndAddMovment(ref newPositionRightUp);
@@ -125,11 +133,12 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                 {
                     r_PiecePlayer.CanCapture = m_CanCapture;
                 }
-
             }
             else
             {
                 int moveDirection;
+                BoardPosition newPositionLeft = new BoardPosition();
+                BoardPosition newPositionRight = new BoardPosition();
 
                 if (m_Symbol == 'X')
                 {
@@ -140,13 +149,9 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                     moveDirection = 1;
                 }
 
-                BoardPosition newPositionLeft = new BoardPosition();
-                BoardPosition newPositionRight = new BoardPosition();
-
                 newPositionRight.Column = m_Position.Column + 1;
                 newPositionLeft.Row = newPositionRight.Row = m_Position.Row + moveDirection;
                 newPositionLeft.Column = m_Position.Column - 1;
-
                 if (m_BoardData.CheckIfInMargins(newPositionLeft) == true)
                 {
                     checkAndAddMovment(ref newPositionLeft);
@@ -175,6 +180,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                 removeCapturedPieceFromBoard(i_NextPosition, m_Position);
                 m_CanCapture = false;
             }
+
             m_Position = i_NextPosition;
             if (m_Symbol == 'X')
             {
@@ -190,6 +196,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                     m_IsKing = true;
                 }
             }
+
             m_BoardData.UpdateBoardCell(m_Position, Symbol);
         }
 
@@ -208,13 +215,13 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
         {
             bool moveCaptureAPiece = false;
 
-            if (m_BoardData.CheckCellAvailabilityAndUpdateCaptureLocation(ref io_NewPosition, m_Symbol, io_NewPosition - m_Position,
-                            out moveCaptureAPiece) == true)
+            if (m_BoardData.CheckCellAvailabilityAndUpdateCaptureLocation(ref io_NewPosition, m_Symbol, io_NewPosition - m_Position, out moveCaptureAPiece) == true)
             {
                 if (m_CanCapture == false)
                 {
                     m_CanCapture = moveCaptureAPiece;
                 }
+
                 if (m_CanCapture == true)
                 {
                     if (moveCaptureAPiece == true)
@@ -233,7 +240,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
         {
             if (m_CanCapture == true)
             {
-                for(int i = m_AvailableMovement.Count - 1 ; i >= 0; i--)
+                for(int i = m_AvailableMovement.Count - 1; i >= 0; i--)
                 {
                     if (checkMoveForCapturePossibility(m_AvailableMovement[i], m_Position) == false)
                     {

@@ -8,12 +8,15 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
     // UI Class
     public class Game
     {
+        private const bool v_ComputerPlayer = true;
         private readonly char r_QuitGame = 'Q';
+
         private enum eGameType
         {
             PlayerVsPlayer = 1,
             PlayerVsComputer = 2,
         }
+
         public enum eGameSymbols
         {
             PlayerOneRegular = 'X',
@@ -21,19 +24,33 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
             PlayerTwoRegular = 'O',
             PlayerTwoKing = 'U',
         }
-        private const bool v_ComputerPlayer = true;
+
         private eGameType TypeOfTheGame;
         private GameBoard m_BoardData;
         private Player m_PlayerOne; // 'X'
         private Player m_PlayerTwo; // 'O'
         private Player m_CurrentPlayer;
         private Player m_NextPlayer;
+
+        private static bool checkGameTypeOption(eGameType i_GameTypeOption)
+        {
+            bool isValid = true;
+
+            if (Enum.IsDefined(typeof(eGameType), i_GameTypeOption) == false)
+            {
+                isValid = false;
+                Console.WriteLine("Wrong option, please select a valid option");
+            }
+
+            return isValid;
+        }
+
         private Game(string i_NamePlayerOne, string i_NamePlayerTwo, int i_BoardSize, eGameType i_GameType)
         {
             TypeOfTheGame = i_GameType;
 
             m_BoardData = new GameBoard(i_BoardSize);
-            m_PlayerOne = new Player(i_NamePlayerOne,!v_ComputerPlayer,eGameSymbols.PlayerOneRegular, m_BoardData);
+            m_PlayerOne = new Player(i_NamePlayerOne, !v_ComputerPlayer, eGameSymbols.PlayerOneRegular, m_BoardData);
             m_PlayerOne.MoveDirection = Player.eMoveDirection.Up;
 
             if (i_GameType == eGameType.PlayerVsPlayer)
@@ -49,6 +66,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
             m_NextPlayer = m_PlayerOne;
             m_PlayerTwo.MoveDirection = Player.eMoveDirection.Down;
         }
+
         public static Game Initialize()
         {
             string namePlayerOne;
@@ -56,22 +74,23 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
             int boardSize;
             eGameType gameTypeOption;
 
-
             namePlayerOne = getName();
-
             do
             {
                 do
                 {
                   Console.WriteLine("Please enter a valid size of the board (6/8/10): ");
-                } while (int.TryParse(Console.ReadLine(), out boardSize) == false);
-            } while (GameBoard.CheckBoardSizeValidity(boardSize) == false);
+                }
+                while (int.TryParse(Console.ReadLine(), out boardSize) == false);
+            }
+            while (GameBoard.CheckBoardSizeValidity(boardSize) == false);
 
             int userChoice;
             do
             {
                 Console.WriteLine("For Player vs. Player Press (1) {0}For Player vs. Computer Press (2)", Environment.NewLine);
-            } while ((int.TryParse(Console.ReadLine(), out userChoice) == false) && (checkGameTypeOption((eGameType)userChoice) == false));
+            }
+            while ((int.TryParse(Console.ReadLine(), out userChoice) == false) && (checkGameTypeOption((eGameType)userChoice) == false));
 
             gameTypeOption = (eGameType) userChoice;
             if (gameTypeOption == eGameType.PlayerVsPlayer)
@@ -86,6 +105,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
             Game newGame = new Game(namePlayerOne, namePlayerTwo, boardSize, gameTypeOption);
             return newGame;
         }
+
         private static string getName()
         {
             string name;
@@ -93,10 +113,12 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
             {
                 Console.WriteLine("Please enter a valid name: ");
                 name = Console.ReadLine();
-            } while (Player.CheckNameValidity(name) == false);
+            }
+            while (Player.CheckNameValidity(name) == false);
 
             return name;
         }
+
         private void convertStringToBoardPositions(string i_NextMove, out BoardPosition o_CurrentPosition, out BoardPosition o_NextPosition)
         {
             o_CurrentPosition = new BoardPosition();
@@ -106,18 +128,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
             o_NextPosition.Column = i_NextMove[3] - 'A';
             o_NextPosition.Row = i_NextMove[4] - 'a';
         }
-        private static bool checkGameTypeOption(eGameType i_GameTypeOption)
-        {
-            bool isValid = true;
 
-            if (Enum.IsDefined(typeof(eGameType), i_GameTypeOption) == false)
-            {
-                isValid = false;
-                Console.WriteLine("Wrong option, please select a valid option");
-            }
-
-            return isValid;
-        }
         public void play()
         {
             int exitGameOrRetry;
@@ -140,8 +151,8 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                     }
 
                     List<GamePiece> PiecesThatMustCapture;
-                    PiecesThatMustCapture = m_CurrentPlayer.PiecesThatMustCapture(); //first
-                                                                                     //we check if there are pieces that must capture
+                    PiecesThatMustCapture = m_CurrentPlayer.PiecesThatMustCapture(); // first
+                                                                                     // we check if there are pieces that must capture
                     if (m_CurrentPlayer.IsComputer == true)
                     {
                         nextMove = m_CurrentPlayer.ComputerPlayerMove(PiecesThatMustCapture);
@@ -156,34 +167,44 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                             {
                                 Console.Write("{0}'s turn: ", m_CurrentPlayer.Name);
                                 nextMove = Console.ReadLine();
-                                if (nextMove[0] == r_QuitGame)
+                                if (nextMove.Length > 0)
                                 {
-                                    if (checkIfCurrentPlayerIsLosing() == true)
+                                    if (nextMove[0] == r_QuitGame)
                                     {
-                                        swapActivePlayer(ref m_CurrentPlayer, ref m_NextPlayer); //we want
-                                        //the current player to be always the winner
-                                        quitGame = true;
-                                        break;
+                                        if (checkIfCurrentPlayerIsLosing() == true)
+                                        {
+                                            swapActivePlayer(ref m_CurrentPlayer, ref m_NextPlayer); // we want
+                                            // the current player to be always the winner
+                                            quitGame = true;
+                                            break;
+                                        }
                                     }
                                 }
+
                                 legalMove = checkMoveInputValidity(nextMove);
                                 if (legalMove == false)
                                 {
                                     Console.WriteLine("Illegal Move");
                                 }
-                            } while (legalMove == false);
+                            }
+                            while (legalMove == false);
+
                             if (quitGame == true)
                             {
                                 break;
                             }
+
                             convertStringToBoardPositions(nextMove, out CurrentPlace, out NextPlace);
                             legalMove = m_CurrentPlayer.CheckMoveAvailabillityAndMove(CurrentPlace, NextPlace, PiecesThatMustCapture);
+
                             if (legalMove == false)
                             {
                                 Console.WriteLine("Illegal Move");
                             }
-                        } while (legalMove == false);
+                        }
+                        while (legalMove == false);
                     }
+
                     if (quitGame == true)
                     {
                         break;
@@ -201,15 +222,18 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                     printGameBoard();
                     Console.WriteLine("{0}'s move was: {1}", m_CurrentPlayer.Name, nextMove);
                 }
+
                 Screen.Clear();
                 CalculatePlayersScore();
                 Console.WriteLine("{0} Wins! with score: {1}{2}{3} score: {4}", m_CurrentPlayer.Name, m_CurrentPlayer.Score, Environment.NewLine, m_NextPlayer.Name, m_NextPlayer.Score);
                 do
                 {
                     Console.WriteLine("Press 1 to Retry{0}Press 2 to Exit Game", Environment.NewLine);
-                } while ((int.TryParse(Console.ReadLine(),out exitGameOrRetry) == false) && (checkExitOrRetryInput(exitGameOrRetry) == false));
+                }
+                while ((int.TryParse(Console.ReadLine(), out exitGameOrRetry) == false) && (checkExitOrRetryInput(exitGameOrRetry) == false));
+
                 if (exitGameOrRetry == 1)
-                { //Initiliazation of game pieces on the board, and connecting them to the player
+                { // Initiliazation of game pieces on the board, and connecting them to the player
                     m_BoardData.InitiliazeGamePiecesOnBoard();
                     m_PlayerOne.ConnectThePiecesToThePlayer();
                     m_PlayerTwo.ConnectThePiecesToThePlayer();
@@ -224,10 +248,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                 {
                     endOfTheGame = true;
                 }
-               
             }
-
-
         }
 
         private bool checkExitOrRetryInput(int i_ExitGameOrRetry)
@@ -258,17 +279,18 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
             {
                 currentPlayerIsLosing = true;
             }
+
             return currentPlayerIsLosing;
         }
 
         private void printGameBoard()
         {
-
             for (int i = 0; i < m_BoardData.GameBoardSize; i++)
             {
                 Console.Write("   ");
                 Console.Write((char)('A' + i));
             }
+
             Console.WriteLine("   ");
             printSeperator();
 
@@ -280,6 +302,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                 {
                     Console.Write(" {0} |", m_BoardData.GetCellSymbol(i, j));
                 }
+
                 Console.WriteLine(' ');
                 printSeperator();
             }
@@ -288,12 +311,14 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
         private void printSeperator()
         {
             Console.Write(' ');
-            for (int i = 0; i < (m_BoardData.GameBoardSize*4) + 2; i++)
+            for (int i = 0; i < (m_BoardData.GameBoardSize * 4) + 2; i++)
             {
                 Console.Write('=');
             }
+
             Console.WriteLine(' ');
         }
+
         private bool checkMoveInputValidity(string i_NextMove)
         {
             bool isValid = true;
@@ -304,7 +329,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
             }
             else
             {
-                if (i_NextMove[0]<'A' || i_NextMove[0]>'A'+m_BoardData.GameBoardSize)
+                if (i_NextMove[0] < 'A' || i_NextMove[0] > 'A' + m_BoardData.GameBoardSize)
                 {
                     isValid = false;
                 }
@@ -328,6 +353,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
 
             return isValid;
         }
+
         private void swapActivePlayer(ref Player i_ActivePlayer, ref Player i_NextPlayer)
         {
             Player temp;
@@ -335,6 +361,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
             i_ActivePlayer = i_NextPlayer;
             i_NextPlayer = temp;
         }
+
         private bool checkIfGameIsOver()
         {
             bool gameIsOver = false;
@@ -343,8 +370,8 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
             {
                 gameIsOver = true;
             }
+
             return gameIsOver;
         }
-        
     }
 }
