@@ -60,6 +60,12 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
 
             return equal;
         }
+
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
+
         public static bool operator==(char i_SymbolToEqual, PieceSymbol i_Symbol)
         {
             bool equal = false;

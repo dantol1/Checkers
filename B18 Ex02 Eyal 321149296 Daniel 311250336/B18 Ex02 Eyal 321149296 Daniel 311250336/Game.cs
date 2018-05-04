@@ -5,7 +5,7 @@ using Ex02.ConsoleUtils;
 
 namespace B18_Ex02_Eyal_321149296_Daniel_311250336
 {
-    //UI Class
+    // UI Class
     public class Game
     {
         private readonly char r_QuitGame = 'Q';
