@@ -9,7 +9,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
     public class Game
     {
         private const bool v_ComputerPlayer = true;
-        private readonly char r_QuitGame = 'Q';
+        private const char k_QuitGame = 'Q';
 
         private enum eGameType
         {
@@ -169,7 +169,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                                 nextMove = Console.ReadLine();
                                 if (nextMove.Length > 0)
                                 {
-                                    if (nextMove[0] == r_QuitGame)
+                                    if (nextMove[0] == k_QuitGame)
                                     {
                                         if (checkIfCurrentPlayerIsLosing() == true)
                                         {
