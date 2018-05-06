@@ -17,6 +17,12 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
             PlayerVsComputer = 2,
         }
 
+        private enum eEndOfGameChoice
+        {
+            Retry = 1,
+            Quit = 2,
+        }
+
         public enum eGameSymbols
         {
             PlayerOneRegular = 'X',
@@ -123,10 +129,10 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
         {
             o_CurrentPosition = new BoardPosition();
             o_NextPosition = new BoardPosition();
-            o_CurrentPosition.Column = i_NextMove[0] - 'A';
-            o_CurrentPosition.Row = i_NextMove[1] - 'a';
-            o_NextPosition.Column = i_NextMove[3] - 'A';
-            o_NextPosition.Row = i_NextMove[4] - 'a';
+            o_CurrentPosition.Column = i_NextMove[0] - (char)CharEnum.eCharsToAddOrPrint.CaptialLetterToInt;
+            o_CurrentPosition.Row = i_NextMove[1] - (char)CharEnum.eCharsToAddOrPrint.SmallLetterToInt;
+            o_NextPosition.Column = i_NextMove[3] - (char)CharEnum.eCharsToAddOrPrint.CaptialLetterToInt;
+            o_NextPosition.Row = i_NextMove[4] - (char)CharEnum.eCharsToAddOrPrint.SmallLetterToInt;
         }
 
         public void play()
@@ -232,7 +238,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                 }
                 while ((int.TryParse(Console.ReadLine(), out exitGameOrRetry) == false) && (checkExitOrRetryInput(exitGameOrRetry) == false));
 
-                if (exitGameOrRetry == 1)
+                if (exitGameOrRetry == (int)eEndOfGameChoice.Retry)
                 { // Initiliazation of game pieces on the board, and connecting them to the player
                     m_BoardData.InitiliazeGamePiecesOnBoard();
                     m_PlayerOne.ConnectThePiecesToThePlayer();
@@ -255,7 +261,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
         {
             bool isValidInput = false;
 
-            if ((i_ExitGameOrRetry == 1) || (i_ExitGameOrRetry == 2))
+            if ((i_ExitGameOrRetry == (int)eEndOfGameChoice.Retry) || (i_ExitGameOrRetry == (int)eEndOfGameChoice.Quit))
             {
                 isValidInput = true;
             }
@@ -288,7 +294,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
             for (int i = 0; i < m_BoardData.GameBoardSize; i++)
             {
                 Console.Write("   ");
-                Console.Write((char)('A' + i));
+                Console.Write((char)((int)CharEnum.eCharsToAddOrPrint.CaptialLetterToInt + i));
             }
 
             Console.WriteLine("   ");
@@ -296,27 +302,27 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
 
             for (int i = 0; i < m_BoardData.GameBoardSize; i++)
             {
-                Console.Write((char)('a' + i));
-                Console.Write('|');
+                Console.Write((char)((int)CharEnum.eCharsToAddOrPrint.SmallLetterToInt + i));
+                Console.Write((char)CharEnum.eCharsToAddOrPrint.VerticalSeperator);
                 for (int j = 0; j < m_BoardData.GameBoardSize; j++)
                 {
-                    Console.Write(" {0} |", m_BoardData.GetCellSymbol(i, j));
+                    Console.Write("{0} |", m_BoardData.GetCellSymbol(i, j));
                 }
 
-                Console.WriteLine(' ');
+                Console.WriteLine((char)CharEnum.eCharsToAddOrPrint.Empty);
                 printSeperator();
             }
         }
 
         private void printSeperator()
         {
-            Console.Write(' ');
+            Console.Write((char)CharEnum.eCharsToAddOrPrint.Empty);
             for (int i = 0; i < (m_BoardData.GameBoardSize * 4) + 2; i++)
             {
-                Console.Write('=');
+                Console.Write((char)CharEnum.eCharsToAddOrPrint.HorizontalSeperator);
             }
 
-            Console.WriteLine(' ');
+            Console.WriteLine((char)CharEnum.eCharsToAddOrPrint.Empty);
         }
 
         private bool checkMoveInputValidity(string i_NextMove)
@@ -329,23 +335,23 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
             }
             else
             {
-                if (i_NextMove[0] < 'A' || i_NextMove[0] > 'A' + m_BoardData.GameBoardSize)
+                if (i_NextMove[0] < (char)CharEnum.eCharsToAddOrPrint.CaptialLetterToInt || i_NextMove[0] > (char)CharEnum.eCharsToAddOrPrint.CaptialLetterToInt + m_BoardData.GameBoardSize)
                 {
                     isValid = false;
                 }
-                else if (i_NextMove[1] < 'a' || i_NextMove[1] > 'a' + m_BoardData.GameBoardSize)
+                else if (i_NextMove[1] < (char)CharEnum.eCharsToAddOrPrint.SmallLetterToInt || i_NextMove[1] > (char)CharEnum.eCharsToAddOrPrint.SmallLetterToInt + m_BoardData.GameBoardSize)
                 {
                     isValid = false;
                 }
-                else if (i_NextMove[2] != '>')
+                else if (i_NextMove[2] != (char)CharEnum.eCharsToAddOrPrint.MoveToSymbol)
                 {
                     isValid = false;
                 }
-                else if (i_NextMove[3] < 'A' || i_NextMove[3] > 'A' + m_BoardData.GameBoardSize)
+                else if (i_NextMove[3] < (char)CharEnum.eCharsToAddOrPrint.CaptialLetterToInt || i_NextMove[3] > (char)CharEnum.eCharsToAddOrPrint.CaptialLetterToInt + m_BoardData.GameBoardSize)
                 {
                     isValid = false;
                 }
-                else if (i_NextMove[4] < 'a' || i_NextMove[4] > 'a' + m_BoardData.GameBoardSize)
+                else if (i_NextMove[4] < (char)CharEnum.eCharsToAddOrPrint.SmallLetterToInt || i_NextMove[4] > (char)CharEnum.eCharsToAddOrPrint.SmallLetterToInt + m_BoardData.GameBoardSize)
                 {
                     isValid = false;
                 }
