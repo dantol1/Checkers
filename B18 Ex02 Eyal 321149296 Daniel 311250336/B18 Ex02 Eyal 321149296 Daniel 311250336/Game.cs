@@ -306,7 +306,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                 Console.Write((char)CharEnum.eCharsToAddOrPrint.VerticalSeperator);
                 for (int j = 0; j < m_BoardData.GameBoardSize; j++)
                 {
-                    Console.Write("{0} |", m_BoardData.GetCellSymbol(i, j));
+                    Console.Write(" {0} |", m_BoardData.GetCellSymbol(i, j));
                 }
 
                 Console.WriteLine((char)CharEnum.eCharsToAddOrPrint.Empty);
