@@ -7,12 +7,14 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
     public struct PieceSymbol
     {
         private char m_RegularSymbol;
+
         public char RegularSymbol
         {
             get
             {
                 return m_RegularSymbol;
             }
+
             set
             {
                 m_RegularSymbol = value;
@@ -26,19 +28,23 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
                 }
             }
         }
+
         private char m_KingSymbol;
+
         public char KingSymbol
         {
             get
             {
                 return m_KingSymbol;
             }
+
             set
             {
                 m_KingSymbol = value;
             }
         }
-        public static bool operator!=(PieceSymbol i_Symbol, char i_SymbolToEqual)
+
+        public static bool operator !=(PieceSymbol i_Symbol, char i_SymbolToEqual)
         {
             bool notEqual = true;
 
@@ -49,7 +55,8 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
 
             return notEqual;
         }
-        public static bool operator==(PieceSymbol i_Symbol, char i_SymbolToEqual)
+
+        public static bool operator ==(PieceSymbol i_Symbol, char i_SymbolToEqual)
         {
             bool equal = false;
 
@@ -60,7 +67,8 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
 
             return equal;
         }
-        public static bool operator==(char i_SymbolToEqual, PieceSymbol i_Symbol)
+
+        public static bool operator ==(char i_SymbolToEqual, PieceSymbol i_Symbol)
         {
             bool equal = false;
 
@@ -71,6 +79,7 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
 
             return equal;
         }
+
         public static bool operator !=(char i_SymbolToEqual, PieceSymbol i_Symbol)
         {
             bool notEqual = true;
@@ -83,5 +92,9 @@ namespace B18_Ex02_Eyal_321149296_Daniel_311250336
             return notEqual;
         }
 
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj);
+        }
     }
 }
